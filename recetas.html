@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <title>Tarea sesión 1, Antonio Amador</title>
+</head>
+
+<body>
+  <div id="raiz" />
+
+  <script src="https://unpkg.com/react@18/umd/react.development.js">
+  </script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js">
+  </script>
+
+  <script>
+    const root = ReactDOM.createRoot(document.getElementById('raiz'));
+
+    const arrayRecetas = []
+    let arrayIngredientes = []
+
+    const listRecetas = React.createElement('p', null, arrayRecetas.map((receta, index) => {
+        return React.createElement('span', { key: index }, 
+        [
+            receta.nombre, 
+            receta.ingredientes.map((ingrediente, index) => {
+                return React.createElement('li', { key: index}, ingrediente)
+            })
+        ])
+    }))
+
+    const renderLists = (ingredientes, recetas, from) => {
+
+        if (from === 'receta'){
+            ingredientes = []
+            arrayIngredientes = []
+        }
+
+        const listaIngredies = React.createElement("ul", null, [...ingredientes].map((ingrediente, index) => {
+            return React.createElement("li", { key: index }, ingrediente)
+        }))
+
+        const listRecetas = React.createElement('div', null, recetas.map((receta, index) => {
+            console.log(receta.imagen)
+            return React.createElement('p', { key: index }, 
+            [
+                `Receta: ${receta.nombre}, tiempo de preparación: ${receta.tiempo}`, 
+                React.createElement('img', {src: receta.imagen, style: {height: '100px'}},  null ),
+                receta.ingredientes.map((ingrediente, index) => {
+                    return React.createElement('li', { key: index}, ingrediente)
+                })
+            ])
+        }))
+
+
+        root.render([formIngrediente, listaIngredies, form, listRecetas])
+    }
+
+    const submitReceta = (event) => {
+      event.preventDefault();
+      let arrayIngredientesTemp = [...arrayIngredientes]
+      let receta = {nombre: event.target.nombre.value, tiempo: event.target.tiempo.value, imagen: event.target.imagen.value, ingredientes: arrayIngredientesTemp}
+      arrayRecetas.push(receta)
+      renderLists(arrayIngredientes, arrayRecetas, 'receta')
+    }
+
+    const agregarIngrediente = (event) => {
+        event.preventDefault();
+        arrayIngredientes.push(event.target.ingrediente.value)
+        renderLists(arrayIngredientes, arrayRecetas, 'ingrediente')
+    }
+
+    const listaIngredies = React.createElement("ul", null, arrayIngredientes.map((ingrediente, index) => {
+      return React.createElement("li", { key: index }, ingrediente)
+    }))
+
+    const form = React.createElement('form', { onSubmit: submitReceta }, [
+      React.createElement('input', { type: 'text', name: 'nombre', placeholder: 'nombre de receta' }),
+      React.createElement('input', { type: 'text', name: 'tiempo', placeholder: 'tiempo' }),
+      React.createElement('input', { type: 'text', name: 'imagen', placeholder: 'URL de la imágen' }),
+      React.createElement('button', { type: 'submit' }, 'Agregar'),
+    ]);
+
+    const formIngrediente = React.createElement('form', { onSubmit: agregarIngrediente }, [
+      React.createElement('input', { type: 'text', name: 'ingrediente', placeholder: 'ingrediente' }),
+      React.createElement('button', { type: 'submit' }, 'Agregar Ingrediente')
+    ]);
+
+
+    root.render([formIngrediente, form]);
+
+  </script>
+</body>
+
+</html>
